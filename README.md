@@ -1,6 +1,6 @@
-# mi-p
+# @kkopite/mi
 
-[![NPM version](https://img.shields.io/npm/v/mi-p?color=a1b858&label=)](https://www.npmjs.com/package/mi-p)
+[![NPM version](https://img.shields.io/npm/v/@kkopite/mi?color=a1b858&label=)](https://www.npmjs.com/package/@kkopite/mi)
 
 ## License
 

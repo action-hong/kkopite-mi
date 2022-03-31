@@ -1,18 +1,18 @@
 {
-  "name": "mi-p",
+  "name": "@kkopite/mi",
   "version": "0.0.2-beta.3",
   "packageManager": "pnpm@6.32.3",
   "description": "",
   "keywords": [],
-  "homepage": "https://github.com/action-hong/mi-p#readme",
+  "homepage": "https://github.com/action-hong/@kkopite/mi#readme",
   "bugs": {
-    "url": "https://github.com/action-hong/mi-p/issues"
+    "url": "https://github.com/action-hong/@kkopite/mi/issues"
   },
   "license": "MIT",
   "author": "kkopite <kkopitehong@foxmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/action-hong/mi-p.git"
+    "url": "git+https://github.com/action-hong/@kkopite/mi.git"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -29,7 +29,7 @@
     "bin"
   ],
   "bin": {
-    "mi-p": "./bin/mi-p.js"
+    "mi": "./bin/mi.js"
   },
   "sideEffects": false,
   "scripts": {
