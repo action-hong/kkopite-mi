@@ -42,6 +42,11 @@
     "test": "vitest",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@types/inquirer": "^8.2.1",
+    "inquirer": "^8.2.2",
+    "minimist": "^1.2.6"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^0.18.9",
     "@antfu/ni": "^0.13.2",
@@ -60,10 +65,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "@types/inquirer": "^8.2.1",
-    "inquirer": "^8.2.2",
-    "minimist": "^1.2.6"
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fs from 'fs'
 import { spawn } from 'child_process'
 import minimist from 'minimist'
