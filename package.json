@@ -45,7 +45,8 @@
   "dependencies": {
     "@types/inquirer": "^8.2.1",
     "inquirer": "^8.2.2",
-    "minimist": "^1.2.6"
+    "minimist": "^1.2.6",
+    "picocolors": "^1.0.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.18.9",
