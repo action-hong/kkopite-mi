@@ -45,6 +45,7 @@
   "dependencies": {
     "@types/inquirer": "^8.2.1",
     "inquirer": "^8.2.2",
+    "mammoth": "^1.4.21",
     "minimist": "^1.2.6",
     "picocolors": "^1.0.0"
   },
