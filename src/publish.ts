@@ -8,8 +8,10 @@ import { go } from './utils'
 
 export async function publish() {
   // 找到projects下的所有目录
+  const map = tryGetProjectName() as Record<string, string>
   const projects = fs.readdirSync('./projects')
     .filter(name => name.startsWith('com.'))
+    .map(name => ({ name: name + (map[name] ? `(${map[name]})` : ''), value: name }))
   const answer = await inquirer.prompt([
     {
       type: 'list',
@@ -51,7 +53,24 @@ export async function publish() {
 }
 
 export function checkPath(path: string) {
+  if (!fs.existsSync(path)) return false
   const file = fs.readFileSync(path, 'utf-8')
   const reg = /USE_MOCK\s?=\s?true/
   return reg.test(file)
+}
+
+export function tryGetProjectName() {
+  const jsonPath = './.vscode/settings.json'
+  if (!fs.existsSync(jsonPath)) {
+    console.log(pc.red(`WARN: ${jsonPath}不存在`))
+    return {}
+  }
+  try {
+    const data = JSON.parse(fs.readFileSync(jsonPath, 'utf-8')) as any
+    return data['mihome.projectAliasMap'] || {}
+  }
+  catch (error) {
+    console.log(pc.red(`WARN: ${jsonPath}解析失败`))
+    return {}
+  }
 }
