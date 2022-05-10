@@ -1,3 +1,4 @@
+import fs from 'fs'
 import inquirer from 'inquirer'
 
 export function go(message: string) {
@@ -8,4 +9,32 @@ export function go(message: string) {
       message,
     },
   ]).then(res => res.go)
+}
+
+const DATA_JSON = './.mihome.json'
+
+interface MiHomeStorage {
+  recentPublishProject: Record<string, number>
+}
+
+const DefaultStorage: MiHomeStorage = {
+  recentPublishProject: {},
+}
+
+export function getStorage(): MiHomeStorage {
+  if (!fs.existsSync(DATA_JSON)) {
+    return {
+      ...DefaultStorage,
+    }
+  }
+  else {
+    return {
+      ...DefaultStorage,
+      ...JSON.parse(fs.readFileSync(DATA_JSON, 'utf-8')),
+    }
+  }
+}
+
+export function setStorage(data: MiHomeStorage) {
+  fs.writeFileSync(DATA_JSON, JSON.stringify(data))
 }

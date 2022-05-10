@@ -4,13 +4,16 @@ import fs from 'fs'
 import { spawn } from 'child_process'
 import inquirer from 'inquirer'
 import pc from 'picocolors'
-import { go } from './utils'
+import { getStorage, go, setStorage } from './utils'
 
 export async function publish() {
+  const storage = getStorage()
+  const recent = storage.recentPublishProject
   // 找到projects下的所有目录
   const map = tryGetProjectName() as Record<string, string>
   const projects = fs.readdirSync('./projects')
     .filter(name => name.startsWith('com.'))
+    .sort((a, b) => (recent[b] || 0) - (recent[a] || 0))
     .map(name => ({ name: name + (map[name] ? `(${map[name]})` : ''), value: name }))
   const answer = await inquirer.prompt([
     {
@@ -29,6 +32,10 @@ export async function publish() {
     if (!await go('是否坚持打包?'))
       return
   }
+
+  // 保存当前选择的
+  recent[answer.project] = Date.now()
+  setStorage(storage)
 
   // https://www.cnblogs.com/yinyuxing/p/15508288.html
   const command = process.platform === 'win32' ? 'npm.cmd' : 'npm'
