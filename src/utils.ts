@@ -38,3 +38,11 @@ export function getStorage(): MiHomeStorage {
 export function setStorage(data: MiHomeStorage) {
   fs.writeFileSync(DATA_JSON, JSON.stringify(data))
 }
+
+export function random(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+export function randomSec(min: number, max: number) {
+  return `${(random(min * 100, max * 100) / 100).toFixed(2)}s`
+}
