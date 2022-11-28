@@ -4,15 +4,15 @@
   "packageManager": "pnpm@6.32.3",
   "description": "",
   "keywords": [],
-  "homepage": "https://github.com/action-hong/@kkopite/mi#readme",
+  "homepage": "https://github.com/action-hong/kkopite-mi#readme",
   "bugs": {
-    "url": "https://github.com/action-hong/@kkopite/mi/issues"
+    "url": "https://github.com/action-hong/kkopite-mi/issues"
   },
   "license": "MIT",
   "author": "kkopite <kkopitehong@foxmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/action-hong/@kkopite/mi.git"
+    "url": "git+https://github.com/action-hong/kkopite-mi.git"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -47,7 +47,8 @@
     "inquirer": "^8.2.2",
     "mammoth": "^1.4.21",
     "minimist": "^1.2.6",
-    "picocolors": "^1.0.0"
+    "picocolors": "^1.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.18.9",

@@ -4,11 +4,12 @@ import { version } from '../package.json'
 import { convert } from './convert'
 import { generateRandom } from './generate'
 import { publish } from './publish'
+import { excelToJson, jsonoToExcel } from './translate'
 
 async function main() {
   const argv = minimist(process.argv.slice(2), {
     boolean: ['publish', 'convert', 'outputDir', 'help', 'version', 'generate'],
-    string: ['min', 'max', 'count'],
+    string: ['min', 'max', 'count', 'src', 'dst'],
     alias: {
       publish: 'p',
       convert: 'c',
@@ -16,6 +17,7 @@ async function main() {
       help: 'h',
       version: 'v',
       generate: 'g',
+      translate: 't',
     },
   })
 
@@ -41,6 +43,17 @@ async function main() {
     const count = argv.count ?? 20
     generateRandom(min, max, count)
   }
+  else if (argv.translate) {
+    const src = argv.src
+    const dst = argv.dst
+    if (src.endsWith('.xlsx')) {
+      // toJson
+      excelToJson(src, dst)
+    }
+    else {
+      jsonoToExcel(src, dst)
+    }
+  }
 }
 
 function help() {
@@ -53,8 +66,9 @@ Options:
   -p, --publish           ${pc.dim('[boolean]')} select a mihome project from current directory to publish
   -c, --convert <files>   ${pc.dim('[string]')}  convert all files(file or directory's file) to markdown
   -o, --outputDir=<path>  ${pc.dim('[string]')}  output directory otherwise use current directory
-  -g, --generate          ${pc.dim('[boolean]')}  generate random data sec <min>s, <max>s, <count>
+  -g, --generate          ${pc.dim('[boolean]')} generate random data sec <min>s, <max>s, <count>
   -v, --version           ${pc.dim('[boolean]')} show version
+  -t, --translate         ${pc.dim('[boolean]')} json to excel(mi -t --src=./path/to/locale/json/parent/dir --dst=./translate/excel/output/dir)
 `)
 }
 
