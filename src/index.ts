@@ -8,8 +8,8 @@ import { excelToJson, jsonoToExcel } from './translate'
 
 async function main() {
   const argv = minimist(process.argv.slice(2), {
-    boolean: ['publish', 'convert', 'outputDir', 'help', 'version', 'generate'],
-    string: ['min', 'max', 'count', 'src', 'dst'],
+    boolean: ['publish', 'convert', 'help', 'version', 'generate', 'show'],
+    string: ['min', 'max', 'count', 'src', 'dst', 'outputDir'],
     alias: {
       publish: 'p',
       convert: 'c',
@@ -18,8 +18,14 @@ async function main() {
       version: 'v',
       generate: 'g',
       translate: 't',
+      show: 's',
     },
   })
+
+  if (argv.show) {
+    // eslint-disable-next-line no-console
+    console.log(JSON.stringify(argv, null, 2))
+  }
 
   if (argv.publish) {
     publish()
@@ -28,7 +34,7 @@ async function main() {
     const paths = argv._
     if (paths.length === 0)
       paths.push('./')
-    convert(paths, argv.outputDir ?? './')
+    convert(paths, argv.outputDir)
   }
   else if (argv.help) {
     help()
@@ -64,7 +70,7 @@ Usage:
 
 Options:
   -p, --publish           ${pc.dim('[boolean]')} select a mihome project from current directory to publish
-  -c, --convert <files>   ${pc.dim('[string]')}  convert all files(file or directory's file) to markdown
+  -c, --convert --outputDir=<output> <files>   ${pc.dim('[string]')}  convert all files(file or directory's file) to markdown
   -o, --outputDir=<path>  ${pc.dim('[string]')}  output directory otherwise use current directory
   -g, --generate          ${pc.dim('[boolean]')} generate random data sec <min>s, <max>s, <count>
   -v, --version           ${pc.dim('[boolean]')} show version
