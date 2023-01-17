@@ -4,6 +4,7 @@ import fs from 'fs'
 import { spawn } from 'child_process'
 import inquirer from 'inquirer'
 import pc from 'picocolors'
+import JSON5 from 'json5'
 import { getStorage, go, setStorage } from './utils'
 
 export async function publish() {
@@ -73,7 +74,7 @@ export function tryGetProjectName() {
     return {}
   }
   try {
-    const data = JSON.parse(fs.readFileSync(jsonPath, 'utf-8')) as any
+    const data = JSON5.parse(fs.readFileSync(jsonPath, 'utf-8')) as any
     return data['mihome.projectAliasMap'] || {}
   }
   catch (error) {
