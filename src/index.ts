@@ -5,10 +5,11 @@ import { convert } from './convert'
 import { generateRandom } from './generate'
 import { publish } from './publish'
 import { excelToJson, jsonoToExcel } from './translate'
+import { getQPS } from './qps'
 
 async function main() {
   const argv = minimist(process.argv.slice(2), {
-    boolean: ['publish', 'convert', 'help', 'version', 'generate', 'show'],
+    boolean: ['publish', 'convert', 'help', 'version', 'generate', 'show', 'qps'],
     string: ['min', 'max', 'count', 'src', 'dst', 'outputDir'],
     alias: {
       publish: 'p',
@@ -19,6 +20,7 @@ async function main() {
       generate: 'g',
       translate: 't',
       show: 's',
+      qps: 'q',
     },
   })
 
@@ -60,6 +62,12 @@ async function main() {
       jsonoToExcel(src, dst)
     }
   }
+  else if (argv.qps) {
+    if (argv.src)
+      getQPS(argv.src)
+    else
+      throw new Error('you must set xlsx path, like --src="xxx.xlsx"')
+  }
 }
 
 function help() {
@@ -75,6 +83,7 @@ Options:
   -g, --generate          ${pc.dim('[boolean]')} generate random data sec <min>s, <max>s, <count>
   -v, --version           ${pc.dim('[boolean]')} show version
   -t, --translate         ${pc.dim('[boolean]')} json to excel(mi -t --src=./path/to/locale/json/parent/dir --dst=./translate/excel/output/dir)
+  -q, --qps               ${pc.dim('[boolean]')} calc qps(mi -q --src="./path/to/excel")
 `)
 }
 
