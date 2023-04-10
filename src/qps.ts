@@ -21,6 +21,6 @@ export function getQPS(src: string) {
   const qps = Math.max(...data.map(obj => obj.params)
     .map(p => 60 * p.ots_stat[6] / p.miio_times[0]))
 
-  console.log(`一天的发包数: ${pc.green(c)} ${data.length}`)
+  console.log(`一天的发包数: ${pc.green(c)}`)
   console.log(`最大的qps: ${pc.green(qps)}`)
 }
