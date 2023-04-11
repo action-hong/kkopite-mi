@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import mammoth from 'mammoth'
 import pc from 'picocolors'
+import { resolveMarkdown } from './utils'
 
 export function convert(paths: string[], outputDir = './'): Promise<any> {
   if (!fs.existsSync(outputDir))
@@ -26,7 +27,8 @@ function convertDocxToMardown(filename: string, outputDir: string) {
     .then((res) => {
       const name = `${path.basename(filename, '.docx')}.md`
       const dist = path.join(outputDir, name)
-      fs.writeFileSync(dist, res.value)
+      const text = resolveMarkdown(res.value)
+      fs.writeFileSync(dist, text)
       // eslint-disable-next-line no-console
       console.log(pc.green(`${filename} => ${dist}`))
       return true
