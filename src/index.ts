@@ -9,7 +9,7 @@ import { getQPS } from './qps'
 
 async function main() {
   const argv = minimist(process.argv.slice(2), {
-    boolean: ['publish', 'convert', 'help', 'version', 'generate', 'show', 'qps'],
+    boolean: ['publish', 'convert', 'help', 'version', 'generate', 'show', 'qps', 'html'],
     string: ['min', 'max', 'count', 'src', 'dst', 'outputDir'],
     alias: {
       publish: 'p',
@@ -36,7 +36,7 @@ async function main() {
     const paths = argv._
     if (paths.length === 0)
       paths.push('./')
-    convert(paths, argv.outputDir)
+    convert(paths, argv.outputDir, argv.html)
   }
   else if (argv.help) {
     help()
@@ -78,7 +78,7 @@ Usage:
 
 Options:
   -p, --publish           ${pc.dim('[boolean]')} select a mihome project from current directory to publish
-  -c, --convert --outputDir=<output> <files>   ${pc.dim('[string]')}  convert all files(file or directory's file) to markdown
+  -c, --convert --outputDir=<output> <--html> <files>   ${pc.dim('[string]')}  convert all files(file or directory's file) to markdown or html if with --html
   -o, --outputDir=<path>  ${pc.dim('[string]')}  output directory otherwise use current directory
   -g, --generate          ${pc.dim('[boolean]')} generate random data sec <min>s, <max>s, <count>
   -v, --version           ${pc.dim('[boolean]')} show version

@@ -13,6 +13,7 @@ export function getQPS(src: string) {
 
   const data = result
     .map(item => item.MsgBody)
+    .filter(Boolean)
     .map(item => JSON.parse(item))
 
   const c = data.map(obj => obj.params.ots_stat[6])
