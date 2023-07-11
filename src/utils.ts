@@ -47,24 +47,6 @@ export function randomSec(min: number, max: number) {
   return `${(random(min * 100, max * 100) / 100).toFixed(2)}s`
 }
 
-const regexArray = [
-  {
-    regex: /\\\./g,
-    replacer: '.',
-  },
-  {
-    regex: /(?<![\:\>])(?:(?:\+|00)86)?1\d{10}/g,
-    replacer: '<a href="tel:$&">$&</a>',
-  },
-  {
-    regex: /(([^<>()[\]\\.,;：:\s@"\u4E00-\u9FA5]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/g,
-    replacer: '<a href="mailto:$&">$&</a>',
-  },
-]
-// 处理电话，处理邮箱
-export function resolveMarkdown(str: string) {
-  regexArray.forEach((item) => {
-    str = str.replace(item.regex, item.replacer)
-  })
-  return str
+export function defineMarkdownTransform(func: (str: string, name: string) => string) {
+  return func
 }
