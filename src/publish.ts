@@ -7,6 +7,32 @@ import pc from 'picocolors'
 import JSON5 from 'json5'
 import { getStorage, go, setStorage } from './utils'
 
+interface ValidError {
+  valid: (p: string) => boolean
+  text: string | string[] | ((p: string) => string | string[])
+}
+
+const validConfig: Array<ValidError> = [
+  {
+    valid(projectName: string) {
+      const p = `./projects/${projectName}/util/device.js`
+      if (!fs.existsSync(p)) return false
+      const file = fs.readFileSync(p, 'utf-8')
+      const reg = /USE_MOCK\s?=\s?true/
+      return reg.test(file)
+    },
+    text(projectName: string) {
+      return `修改${projectName}文件中关于 USE_MOCK = true的代码, 改成USE_MOCK = false后再打包!!!`
+    },
+  },
+  {
+    valid(_projectName: string) {
+      return true
+    },
+    text: ['请确认你的项目是否需要配置智能场景，检查你的设置页面'],
+  },
+]
+
 export async function publish() {
   const storage = getStorage()
   const recent = storage.recentPublishProject
@@ -25,13 +51,21 @@ export async function publish() {
     },
   ])
 
-  // 检查是否使用了 mock
-  const p = `./projects/${answer.project}/util/device.js`
+  for (const valid of validConfig) {
+    if (valid.valid(answer.project)) {
+      let temp = valid.text as (string[] | string)
+      let result: string[] = []
+      if (typeof valid.text === 'function')
+        temp = valid.text(answer.project)
+      if (typeof temp === 'string')
+        result = [temp]
+      else
+        result = temp
 
-  if (checkPath(p)) {
-    console.log(pc.red(`WARN: 修改${p}文件中关于 USE_MOCK = true的代码, 改成USE_MOCK = false后再打包!!!`))
-    if (!await go('是否坚持打包?'))
-      return
+      console.log(pc.red(`WARN:\n${result.join('\n')}`))
+      if (!await go('是否坚持打包?'))
+        return
+    }
   }
 
   // 保存当前选择的
