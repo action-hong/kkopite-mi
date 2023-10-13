@@ -33,30 +33,42 @@ const validConfig: Array<ValidError> = [
   },
 ]
 
-export async function publish() {
+function commandPublish(name: string) {
+  return new Promise((resolve) => {
+    // https://www.cnblogs.com/yinyuxing/p/15508288.html
+    const command = process.platform === 'win32' ? 'npm.cmd' : 'npm'
+    const ls = spawn(command, [
+      'run',
+      'publish',
+      name,
+    ])
+
+    ls.stdout.on('data', (data) => {
+    // buffer to string
+      console.log(data.toString())
+    })
+
+    ls.stderr.on('data', (data) => {
+      console.log(pc.red(`stderr: ${data}`))
+    })
+
+    ls.on('close', (code) => {
+      console.log(`child process exited with code ${code}`)
+      resolve(code)
+    })
+  })
+}
+
+async function puglishPackage(name: string) {
   const storage = getStorage()
   const recent = storage.recentPublishProject
-  // 找到projects下的所有目录
-  const map = tryGetProjectName() as Record<string, string>
-  const projects = fs.readdirSync('./projects')
-    .filter(name => name.startsWith('com.'))
-    .sort((a, b) => (recent[b] || 0) - (recent[a] || 0))
-    .map(name => ({ name: name + (map[name] ? `(${map[name]})` : ''), value: name }))
-  const answer = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'project',
-      message: '选择你要打包的项目',
-      choices: projects,
-    },
-  ])
-
+  console.log(pc.green(`准备开始打包${name}`))
   for (const valid of validConfig) {
-    if (valid.valid(answer.project)) {
+    if (valid.valid(name)) {
       let temp = valid.text as (string[] | string)
       let result: string[] = []
       if (typeof valid.text === 'function')
-        temp = valid.text(answer.project)
+        temp = valid.text(name)
       if (typeof temp === 'string')
         result = [temp]
       else
@@ -69,29 +81,32 @@ export async function publish() {
   }
 
   // 保存当前选择的
-  recent[answer.project] = Date.now()
+  recent[name] = Date.now()
   setStorage(storage)
 
-  // https://www.cnblogs.com/yinyuxing/p/15508288.html
-  const command = process.platform === 'win32' ? 'npm.cmd' : 'npm'
-  const ls = spawn(command, [
-    'run',
-    'publish',
-    answer.project,
+  await commandPublish(name)
+}
+
+export async function publish() {
+  const storage = getStorage()
+  const recent = storage.recentPublishProject
+  // 找到projects下的所有目录
+  const map = tryGetProjectName() as Record<string, string>
+  const projects = fs.readdirSync('./projects')
+    .filter(name => name.startsWith('com.'))
+    .sort((a, b) => (recent[b] || 0) - (recent[a] || 0))
+    .map(name => ({ name: name + (map[name] ? `(${map[name]})` : ''), value: name }))
+  const answer = await inquirer.prompt([
+    {
+      type: 'checkbox',
+      name: 'project',
+      message: '选择你要打包的项目',
+      choices: projects,
+    },
   ])
 
-  ls.stdout.on('data', (data) => {
-    // buffer to string
-    console.log(data.toString())
-  })
-
-  ls.stderr.on('data', (data) => {
-    console.error(`stderr: ${data}`)
-  })
-
-  ls.on('close', (code) => {
-    console.log(`child process exited with code ${code}`)
-  })
+  for (const name of answer.project)
+    await puglishPackage(name)
 }
 
 export function checkPath(path: string) {
