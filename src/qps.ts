@@ -17,6 +17,11 @@ export function getQPS(src: string) {
     .map(item => JSON.parse(item))
 
   const c = data.map(obj => obj.params.ots_stat[6])
+    .filter((val, idx, arr) => {
+      if (idx === arr.length - 1) return true
+      if (val > arr[idx + 1]) return true
+      return false
+    })
     .reduce((a, b) => a + b, 0)
 
   const qps = Math.max(...data.map(obj => obj.params)
