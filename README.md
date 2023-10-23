@@ -72,10 +72,20 @@ mi -p
 你需要再根目录上创建`mi.config.js`文件，然后配置你的检查规则即可：
 
 ```js
-export default [
-  {
+/**
+ * @typedef ValidError
+ * @type {object}
+ * @property include {string[]} - 需要检查的项目，空数组即全部检查
+ * @property excluce {string[]} - 排除检查的项目
+ * @property text {string|string[]|((name: string, projectPath: string) => string|string[])} - 错误提示
+ * @property [valid] {(name: string, projectPath: string) => boolean}
+ */
 
-  },
+/**
+ * @type {ValidError[]}
+ */
+export default [
+
 ]
 ```
 

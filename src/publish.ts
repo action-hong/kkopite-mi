@@ -97,6 +97,7 @@ async function puglishPackage(name: string) {
       text,
     } = config
 
+    if (!text) continue
     if (include.length && !include.includes(name)) continue
     if (exclude.length && exclude.includes(name)) continue
 
