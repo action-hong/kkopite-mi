@@ -3,6 +3,7 @@
 import fs from 'fs'
 import { spawn } from 'child_process'
 import path from 'path'
+import { pathToFileURL } from 'url'
 import inquirer from 'inquirer'
 import pc from 'picocolors'
 import JSON5 from 'json5'
@@ -49,9 +50,9 @@ const defaultValidConfig: Array<ValidError> = [
 ]
 
 async function getUserValidConfig(): Promise<Array<ValidError>> {
-  const name = path.resolve(process.cwd(), './mi.config.js')
+  const name = pathToFileURL(path.resolve(process.cwd(), './mi.config.mjs'))
   if (!fs.existsSync(name)) return []
-  const config = await import(name)
+  const config = await import(name.toString())
   if (Array.isArray(config.default)) return config.default
   return [config.default]
 }
