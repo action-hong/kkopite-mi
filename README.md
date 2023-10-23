@@ -82,6 +82,24 @@ export default [
 规则如下：
 
 ```ts
+interface ValidError {
+  /**
+   * 默认或者返回true表示需要提示文案确认
+   */
+  valid?: (name: string, projectPath: string) => boolean
+  /**
+   * 提示文案
+   */
+  text: string | string[] | ((name: string, projectPath: string) => string | string[])
+  /**
+   * 默认为空数组，表示所有项目都需要检查，写项目名即可
+   */
+  include?: string[]
+  /**
+   * 表示排除在外的项目，写项目名
+   */
+  exclude?: string[]
+}
 ```
 
 ### 多语言文本输出
