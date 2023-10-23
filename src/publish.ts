@@ -2,17 +2,32 @@
 
 import fs from 'fs'
 import { spawn } from 'child_process'
+import path from 'path'
 import inquirer from 'inquirer'
 import pc from 'picocolors'
 import JSON5 from 'json5'
 import { getStorage, go, setStorage } from './utils'
 
 interface ValidError {
-  valid: (p: string) => boolean
-  text: string | string[] | ((p: string) => string | string[])
+  /**
+   * 默认或者返回true表示需要提示文案确认
+   */
+  valid?: (name: string, projectPath: string) => boolean
+  /**
+   * 提示文案
+   */
+  text: string | string[] | ((name: string, projectPath: string) => string | string[])
+  /**
+   * 默认为空数组，表示所有项目都需要检查，写项目名即可
+   */
+  include?: string[]
+  /**
+   * 表示排除在外的项目，写项目名
+   */
+  exclude?: string[]
 }
 
-const validConfig: Array<ValidError> = [
+const defaultValidConfig: Array<ValidError> = [
   {
     valid(projectName: string) {
       const p = `./projects/${projectName}/util/device.js`
@@ -32,6 +47,14 @@ const validConfig: Array<ValidError> = [
     text: ['请确认你的项目是否需要配置智能场景，检查你的设置页面'],
   },
 ]
+
+async function getUserValidConfig(): Promise<Array<ValidError>> {
+  const name = path.resolve(process.cwd(), './mi.config.js')
+  if (!fs.existsSync(name)) return []
+  const config = await import(name)
+  if (Array.isArray(config.default)) return config.default
+  return [config.default]
+}
 
 function commandPublish(name: string) {
   return new Promise((resolve) => {
@@ -63,12 +86,26 @@ async function puglishPackage(name: string) {
   const storage = getStorage()
   const recent = storage.recentPublishProject
   console.log(pc.green(`准备开始打包${name}`))
-  for (const valid of validConfig) {
-    if (valid.valid(name)) {
-      let temp = valid.text as (string[] | string)
+  const projectPath = `./projects/${name}`
+  const allConfig = [...defaultValidConfig, ...await getUserValidConfig()]
+  for (const config of allConfig) {
+    const {
+      valid = () => true,
+      include = [],
+      exclude = [],
+      text,
+    } = config
+
+    if (include.length && !include.includes(name)) continue
+    if (exclude.length && exclude.includes(name)) continue
+
+    if (
+      valid(name, projectPath)
+    ) {
+      let temp = text as (string[] | string)
       let result: string[] = []
-      if (typeof valid.text === 'function')
-        temp = valid.text(name)
+      if (typeof text === 'function')
+        temp = text(name, projectPath)
       if (typeof temp === 'string')
         result = [temp]
       else
